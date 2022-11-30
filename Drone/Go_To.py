@@ -23,11 +23,13 @@ points = [(0, 0), (0, 0)]
 def goto(goal_x, goal_y, take_off, cur_x, cur_y):
     # Starting position is 0,0
     # yaw = -65 is pointing north
-    to_rotate = -65 - (me.get_yaw())
-
+    #to_rotate = -65 - (me.get_yaw())
     # Calculate angle and distance
-    angle = int(math.degrees(math.atan(goal_y / goal_x)))
-    dist = int(math.sqrt(((goal_x + cur_x) ** 2) + ((goal_y + cur_y)** 2)))
+    if x == 0:
+        angle = 0
+    else:
+        angle = int(math.degrees(math.atan(goal_y / goal_x)))
+    dist = int(math.sqrt(((goal_x) ** 2) + ((goal_y) ** 2)))
     # print(angle, dist)
 
 
@@ -35,16 +37,18 @@ def goto(goal_x, goal_y, take_off, cur_x, cur_y):
     # 2. Fly in straight line (forward)
     if take_off == 1:
         me.takeoff()
-        me.rotate_counter_clockwise(to_rotate)
+        #me.rotate_counter_clockwise(to_rotate)
         me.rotate_counter_clockwise(angle)
         me.move_forward(dist)
     elif take_off == 0:
-        me.rotate_counter_clockwise(angle)
+        me.rotate_counter_clockwise(-me.get_yaw() + angle)
         me.move_forward(dist)
     elif take_off == -1:
-        angle = int(math.degrees(math.atan(cur_x / cur_y)))
+        #angle = int(math.degrees(math.atan(cur_x / cur_y)))
+        angle = me.get_yaw()
         dist = int(math.sqrt((cur_x**2)+(cur_y**2)))
-        me.rotate_counter_clockwise(angle)
+        print(angle, dist, cur_x, cur_y)
+        me.rotate_counter_clockwise(-angle + 180)
         me.move_forward(dist)
         me.land()
 
@@ -60,25 +64,37 @@ def drawPoints(img, points):
 
 if __name__ == '__main__':
     # Extracting user input for coords
+    cur_x = 0
+    cur_y = 0
+    cur_angle = 0
     while True:
         # Setting up mapping image
         img = np.zeros((1000, 1000, 3), np.uint8)
-        cur_angle = me.get_yaw()
-        cur_dist = me.get_distance_tof()
-        cur_x = cur_angle * math.cos(cur_dist)
-        cur_y = cur_angle * math.sin(cur_dist)
-        points.append((cur_x, cur_y))
-        print(cur_angle, cur_dist, points)
-        drawPoints(img, points)
-        cv2.imshow("Output", img)
-        cv2.waitKey(0)
-        # User input for coordinates
+        # User input for coordi0nates
         coordinates = str(input())
         coords = coordinates.split(',')
         x = int(coords[0].strip())
         y = int(coords[1].strip())
         take_off = int(coords[2].strip())
+        cur_x += x
+        cur_y += y
+        if x != 0:
+            cur_angle = (cur_angle + int(math.degrees(math.atan(y / x)))) % 360
+        else:
+            cur_angle = (cur_angle + 0) % 360
+        points.append((cur_x, cur_y))
+        # drawPoints(img, points)
+        # cv2.imshow("Output", img)
+        # cv2.waitKey(0)
+        print(x, y, take_off)
         # Go to state if exists
-        if x and y and (1 >= take_off >= -1):
+        if 1 >= take_off >= -1:
             goto(x, y, take_off, cur_x, cur_y)
+        else:
+            continue
         # Getting current location to add point to image
+
+        #cur_angle = me.get_yaw()
+        #cur_dist = me.get_distance_tof()
+        #cur_x = cur_angle * math.cos(cur_dist)
+        #cur_y = cur_angle * math.sin(cur_dist)
