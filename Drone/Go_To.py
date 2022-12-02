@@ -53,7 +53,7 @@ def goto(goal_x, goal_y, take_off, cur_x, cur_y):
         dist = int(math.sqrt((cur_x**2)+(cur_y**2)))
         print(angle, dist, cur_x, cur_y)
         if cur_y >= 0 and cur_x < 0: # 2nd Quadrant
-            me.rotate_counter_clockwise(-angle + (180 - (90 - ret_angle)))
+            me.rotate_counter_clockwise(-angle + (180 - (90 + ret_angle)))
         elif cur_y >= 0 and cur_x >= 0: #1st Quadrant
             me.rotate_counter_clockwise(-angle + 180 - (90 - ret_angle))
         elif cur_y < 0 and cur_x < 0: #3rd Quadrant
