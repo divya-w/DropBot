@@ -8,3 +8,7 @@ tfcoreml==1.1
 onnx==1.6.0
 onnx-coreml==1.2
 onnx-tf==1.5.0
+coremltools~=6.0
+numpy~=1.19.5
+h5py~=3.1.0
+djitellopy~=2.4.0
