@@ -21,15 +21,12 @@ import argparse
 import glob
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-
-import distance_detector
 import network
 from tensorflow.python.util import deprecation
 
 # disable future warnings and info messages for this demo
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
-
 parser = argparse.ArgumentParser(description="Single shot depth estimator")
 parser.add_argument(
     "--img", type=str, help="path to reference RGB image", required=True
@@ -45,22 +42,12 @@ parser.add_argument(
     help="path to result folder. If not exists, it will be created",
     default="results",
 )
-
 opts = parser.parse_args()
 if opts.cpu:
     os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
-def create_dir(d):
-    """ Create a directory if it does not exist
-    Args:
-        d: directory to create
-    """
-    if not os.path.exists(d):
-        os.makedirs(d)
-
-
-def main():
+def main(_):
     network_params = {"height": 320, "width": 640, "is_training": False}
 
     # if os.path.isfile(opts.img):
@@ -73,18 +60,18 @@ def main():
     #     print("=> found {} images".format(len(img_list)))
     # else:
     #     raise Exception("No image nor folder provided")
-    #
-    # model = network.Pydnet(network_params)
-    # tensor_image = tf.placeholder(tf.float32, shape=(320, 640, 3))
-    # batch_img = tf.expand_dims(tensor_image, 0)
-    # tensor_depth = model.forward(batch_img)
-    # tensor_depth = tf.nn.relu(tensor_depth)
 
-    # # restore graph
-    # saver = tf.train.Saver()
-    # sess = tf.Session()
-    # sess.run(tf.global_variables_initializer())
-    # saver.restore(sess, "ckpt/pydnet")
+    model = network.Pydnet(network_params)
+    tensor_image = tf.placeholder(tf.float32, shape=(320, 640, 3))
+    batch_img = tf.expand_dims(tensor_image, 0)
+    tensor_depth = model.forward(batch_img)
+    tensor_depth = tf.nn.relu(tensor_depth)
+
+    # restore graph
+    saver = tf.train.Saver()
+    sess = tf.Session()
+    sess.run(tf.global_variables_initializer())
+    saver.restore(sess, opts.ckpt)
 
     # # run graph
     # for i in tqdm(range(len(img_list))):
@@ -115,49 +102,48 @@ def main():
     # run graph
 
     # tello video capture
-    # me = tello.Tello()
-    # me.connect()
-    # print(me.get_battery())
-    # me.streamon()
-
+    me = tello.Tello()
+    me.connect()
+    print(me.get_battery())
+    me.streamon()
     # webcam video capture
-    cam = cv2.VideoCapture(0)
+    # cam = cv2.VideoCapture(0)
 
     while True:
         # tello video capture
-        # frame = me.get_frame_read().frame
+        frame = me.get_frame_read().frame
         # webcam video capture
-        ret, frame = cam.read()
+        # ret, frame = cam.read()
 
-        distance_detector.distance_frame(frame)
-        # # preparing image
-        # img = frame
-        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        # h, w, _ = img.shape
-        # img = cv2.resize(img, (640, 320))
-        # img = img / 255.0
-        #
-        # # inference
-        # depth = sess.run(tensor_depth, feed_dict={tensor_image: img})
-        # depth = np.squeeze(depth)
-        # min_depth = depth.min()
-        # max_depth = depth.max()
-        # depth = (depth - min_depth) / (max_depth - min_depth)
-        # depth *= 255.0
-        #
-        # # preparing final depth
-        # if opts.original_size:
-        #     depth = cv2.resize(depth, (w, h))
-        # #name = os.path.basename(img_list[i]).split(".")[0]
-        # #dest = opts.dest
-        # #create_dir(dest)
-        # #dest = os.path.join(dest, name + "_depth.png")
-        # #plt.imsave(dest, depth, cmap="magma")
-        # plt.figure(1)
-        # plt.clf()
-        # plt.axis("off")
-        # plt.imshow(depth, cmap="magma")
-        # plt.pause(0.1)
+        # distance_detector.distance_frame(frame)
+        # preparing image
+        img = frame
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        h, w, _ = img.shape
+        img = cv2.resize(img, (640, 320))
+        img = img / 255.0
+
+        # inference
+        depth = sess.run(tensor_depth, feed_dict={tensor_image: img})
+        depth = np.squeeze(depth)
+        min_depth = depth.min()
+        max_depth = depth.max()
+        depth = (depth - min_depth) / (max_depth - min_depth)
+        depth *= 255.0
+
+        # preparing final depth
+        if opts.original_size:
+            depth = cv2.resize(depth, (w, h))
+        #name = os.path.basename(img_list[i]).split(".")[0]
+        #dest = opts.dest
+        #create_dir(dest)
+        #dest = os.path.join(dest, name + "_depth.png")
+        #plt.imsave(dest, depth, cmap="magma")
+        plt.figure(1)
+        plt.clf()
+        plt.axis("off")
+        plt.imshow(depth, cmap="magma")
+        plt.pause(0.1)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
