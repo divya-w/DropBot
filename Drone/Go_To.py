@@ -30,6 +30,10 @@ def goto(goal_x, goal_y, take_off, cur_x, cur_y):
     else:
         angle = int(math.degrees(math.atan(goal_y / goal_x)))
     dist = int(math.sqrt(((goal_x) ** 2) + ((goal_y) ** 2)))
+    if cur_x == 0:
+        ret_angle = 0
+    else:
+        ret_angle = int(math.degrees(math.atan(cur_y/cur_x)))
     # print(angle, dist)
 
 
@@ -48,7 +52,7 @@ def goto(goal_x, goal_y, take_off, cur_x, cur_y):
         angle = me.get_yaw()
         dist = int(math.sqrt((cur_x**2)+(cur_y**2)))
         print(angle, dist, cur_x, cur_y)
-        me.rotate_counter_clockwise(-angle + 180)
+        me.rotate_counter_clockwise(-angle + -ret_angle)
         me.move_forward(dist)
         me.land()
 
