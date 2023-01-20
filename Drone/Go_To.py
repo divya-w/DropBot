@@ -25,15 +25,21 @@ def goto(goal_x, goal_y, take_off, start_angle):
     if take_off == 1:
         cur_x, cur_y = 0, 0
         cur_angle = 0
-    if goal_x - cur_x == 0 and goal_y - cur_y < 0:
+    if goal_x == 0 and goal_y == 0:
+        pass
+    elif goal_x - cur_x == 0 and goal_y - cur_y < 0: #directly behind it
         angle = 180
-    elif goal_x - cur_x == 0 and goal_y - cur_y >= 0:
+    elif goal_x - cur_x == 0 and goal_y - cur_y >= 0: #directly in front of it
         angle = 0
-    elif goal_x - cur_x < 0 and goal_y - cur_y < 0:
-        angle = 360 - int(math.degrees(math.atan((goal_y - cur_y) / (goal_x - cur_x))))
-    elif take_off != -1:
+    elif goal_x - cur_x < 0 and goal_y - cur_y < 0:#3rd quadrant
+        angle = 270 + int(math.degrees(math.atan((goal_y - cur_y) / (goal_x - cur_x))))
+    elif goal_x - cur_x > 0 and goal_y - cur_y > 0: #1st quadrant
         angle = int(math.degrees(math.atan((goal_y - cur_y) / (goal_x - cur_x))))
-    dist = int(math.sqrt(goal_x - cur_x ** 2) + (goal_y - cur_y ** 2))
+    elif goal_x - cur_x > 0 and goal_y - cur_y < 0: #4th quadrant
+        angle = 360 + int(math.degrees(math.atan((goal_y - cur_y) / (goal_x - cur_x))))
+    elif goal_x - cur_x < 0 and goal_y - cur_y > 0: #2nd quadrant
+        angle = 180 + int(math.degrees(math.atan((goal_y - cur_y) / (goal_x - cur_x))))
+    dist = int(math.sqrt((goal_x - cur_x) ** 2) + ((goal_y - cur_y) ** 2))
     if cur_y == 0:
         ret_angle = 0
     else:
@@ -43,7 +49,7 @@ def goto(goal_x, goal_y, take_off, start_angle):
     cur_x += goal_x
     cur_y += goal_y
     if x != 0:
-        cur_angle = (cur_angle + int(math.degrees(math.atan(goal_y / goal_x)))) % 360
+        cur_angle = (cur_angle + angle) % 360
     else:
         cur_angle = (cur_angle + 0) % 360
 
@@ -63,18 +69,18 @@ def goto(goal_x, goal_y, take_off, start_angle):
         dist = int(math.sqrt((cur_x**2)+(cur_y**2)))
         print(angle, dist, cur_x, cur_y)
         if cur_y >= 0 and cur_x < 0: # 2nd Quadrant
-            me.rotate_counter_clockwise(angle + (180 - ret_angle))
+            me.rotate_counter_clockwise(-angle + (180 + ret_angle))
             print("2nd", -angle, (180 - ret_angle), cur_x, cur_y, start_angle, cur_angle)
         elif cur_y >= 0 and cur_x >= 0: #1st Quadrant
             me.rotate_counter_clockwise(angle + 180 - ret_angle)
             print("1st", angle, -angle + 180 - ret_angle, ret_angle, cur_x, cur_y, start_angle, cur_angle)
         elif cur_y < 0 and cur_x < 0: #3rd Quadrant
-            angle -= 180
-            me.rotate_counter_clockwise(angle + ret_angle)
+            #angle -= 180
+            me.rotate_counter_clockwise(-(angle - 180) - ret_angle)
             print("3rd", -angle, -angle - ret_angle)
         elif cur_y < 0 and cur_x >= 0: #4th Quadrant
-            angle -= 180
-            me.rotate_counter_clockwise(angle - ret_angle)
+            #angle -= 180
+            me.rotate_counter_clockwise(angle - 180 + ret_angle)
             print("4th", -angle, -angle - ret_angle)
         me.move_forward(dist)
         me.land()
