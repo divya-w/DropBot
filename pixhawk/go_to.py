@@ -2,6 +2,8 @@ import time
 import os
 import platform
 import sys
+import release
+import camera_capture
 
 from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative
 from pymavlink import mavutil
@@ -57,7 +59,7 @@ time.sleep(1)
 print("Going to first point for 10 seconds")
 point1 = LocationGlobalRelative(29.7187102, -95.4054397, 3)
 vehicle.simple_goto(point1)
-time.sleep(10)
+time.sleep(5)
 
 # Land
 vehicle.mode = VehicleMode("LAND")
@@ -67,10 +69,16 @@ while vehicle.mode != 'LAND':
 print("Landed")
 time.sleep(10)
 
-# Take Off
+#Dropping off package
+release.main()
+
+# Take Off and set speed
 arm_and_takeoff(3)
 print("Taking Off")
 vehicle.airspeed = 0.5
+
+#Taking photo of package
+camera_capture.main()
 
 # Return to launch
 print("Returning to launch")

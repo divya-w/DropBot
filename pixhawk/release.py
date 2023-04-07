@@ -15,5 +15,12 @@ def release():
   servo.stop()
   GPIO.cleanup()
 
+def main():
+    # set GPIO numbering mode
+    GPIO.setmode(GPIO.BOARD)
+    # set pin 12 as GPIO out
+    GPIO.setup(12, GPIO.OUT)
+    release()
+
 if __name__ == "__main__":
     release()

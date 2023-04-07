@@ -16,5 +16,9 @@ def capture():
     metadata = picam2.capture_file('/home/DropBot/Desktop/test.jpg')
     picam2.close()
 
+def main():
+    picam2 = Picamera2()
+    capture()
+
 if __name__ == "__main__":
     capture()
