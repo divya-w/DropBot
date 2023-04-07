@@ -3,7 +3,7 @@ import os
 import platform
 import sys
 import release
-#import camera_capture
+import camera_capture
 
 from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative
 from pymavlink import mavutil
@@ -12,7 +12,7 @@ from pymavlink import mavutil
 targetAltitude = 1
 manualArm = False
 ############ DRONEKIT#################
-vehicle = connect('/dev/ttyAMA0', baud=57600, wait_ready=True)
+vehicle = connect('/dev/ttyAMA0', baud=912600, wait_ready=True)
 
 # Select /dev/ttyAMA0 for UART. /dev/ttyACM0 for USB
 
@@ -51,8 +51,8 @@ def arm_and_takeoff(targetHeight):
 	return None
 
 arm_and_takeoff(targetAltitude)
-#camera_capture.capture()
-#release.release()
+camera_capture.main()
+release.main()
 
 vehicle.mode = VehicleMode("LAND")
 
