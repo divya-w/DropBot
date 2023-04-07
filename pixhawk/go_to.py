@@ -57,7 +57,10 @@ time.sleep(1)
 
 # Send vehicle to coordinate
 print("Going to first point for 10 seconds")
-point1 = LocationGlobalRelative(29.7187102, -95.4054397, 3)
+long = 29.7187102
+lat = -95.4054397
+alt = 3
+point1 = LocationGlobalRelative(long, lat, alt)
 vehicle.simple_goto(point1)
 time.sleep(5)
 
