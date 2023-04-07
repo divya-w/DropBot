@@ -42,15 +42,19 @@ def arm_and_takeoff(targetHeight):
 
 ############ MAIN###############
 
+# Set pointHome to current location of drone
+pointHome = vehicle.location.global_relative_frame
+
 # Arms and flies drone into air
 arm_and_takeoff(3)
 
-# Send vehicle to coordinate
+#Setting vehicle speed
 print("Setting speed to 2")
 vehicle.airspeed = 0.5
+time.sleep(1)
 
+# Send vehicle to coordinate
 print("Going to first point for 10 seconds")
-pointHome = LocationGlobalRelative(29.7185455, -95.4055058, 3)
 point1 = LocationGlobalRelative(29.7187102, -95.4054397, 3)
 vehicle.simple_goto(point1)
 time.sleep(10)
@@ -64,7 +68,7 @@ print("Landed")
 time.sleep(10)
 
 # Take Off
-arm_and_takeoff(1.5)
+arm_and_takeoff(3)
 print("Taking Off")
 vehicle.airspeed = 0.5
 
@@ -82,4 +86,3 @@ print("Landed")
 
 print("Closing vehicle")
 vehicle.close()
-
