@@ -8,7 +8,7 @@ import camera_capture
 from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative
 from pymavlink import mavutil
 
-vehicle = connect('/dev/ttyAMA0', baud=57600, wait_ready=True)
+vehicle = connect('/dev/ttyAMA0', baud=921600, wait_ready=True)
 # Select /dev/ttyAMA0 for UART. /dev/ttyACM0 for USB
 
 def arm_and_takeoff(targetHeight):
