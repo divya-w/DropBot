@@ -12,7 +12,7 @@ from pymavlink import mavutil
 targetAltitude = 1
 manualArm = False
 ############ DRONEKIT#################
-vehicle = connect('/dev/ttyAMA0', baud=912600, wait_ready=True)
+vehicle = connect('/dev/ttyAMA0', baud=57600, wait_ready=True)
 
 # Select /dev/ttyAMA0 for UART. /dev/ttyACM0 for USB
 
@@ -51,20 +51,18 @@ def arm_and_takeoff(targetHeight):
 	return None
 
 arm_and_takeoff(targetAltitude)
-camera_capture.main()
-release.main()
+print("Going to release")
+release.release()
+print("released")
+print("taking pic")
+camera_capture.capture()
 
 vehicle.mode = VehicleMode("LAND")
 
 while vehicle.mode != 'LAND':
-	time.sleep(1)
-	print("Waiting for drone to land")
+  time.sleep(1)
+  print("Waiting for drone to land")
 
-#for i in range(5):	
- #   time.sleep(1)
-  #  release.release
-   # time.sleep(3)
-#print("released")
 
 print("Drone in land mode. Exiting script.")
 
