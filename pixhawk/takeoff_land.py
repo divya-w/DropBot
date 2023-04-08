@@ -39,6 +39,7 @@ def arm_and_takeoff(targetHeight):
 
 	print("Look out! Props are spinning!!")
 
+	vehicle.airspeed = 0.5
 	vehicle.simple_takeoff(targetHeight)  # meters
 
 	while True:
