@@ -30,11 +30,10 @@ def arm_and_takeoff(targetLat, targetLon, targetHeight):
             print("Waiting for vehicle to arm")
             time.sleep(1)
 
-        print("Taking off!")       
-        vehicle.simple_takeoff(0.5)
-        vehicle.airspeed =  0.25
-        targetLoc = LocationGlobalRelative(targetLat, targetLon, targetHeight)
-        vehicle.simple_goto(targetLoc)
+        print("Taking off!")
+        vehicle.airspeed = 0.5
+        vehicle.simple_takeoff(1)
+        vehicle.simple_goto(LocationGlobalRelative(targetLat, targetLon, targetHeight))
         #vehicle.simple_takeoff(targetHeight)  # meters
 
         while True:
@@ -57,7 +56,7 @@ arm_and_takeoff(pointHome_lat, pointHome_lon, 4)
 
 #Setting vehicle speed
 print("Setting speed to 2")
-vehicle.airspeed = 0.25
+vehicle.airspeed = 0.5
 time.sleep(1)
 
 # Send vehicle to coordinate
@@ -84,7 +83,7 @@ time.sleep(10)
 # Take Off and set speed
 arm_and_takeoff(lat, lon, 4)
 print("Taking Off")
-vehicle.airspeed = 0.25
+vehicle.airspeed = 0.5
 time.sleep(5)
 
 #Taking photo of package
